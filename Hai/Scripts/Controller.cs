@@ -7,6 +7,7 @@ public class Controller : MonoBehaviour
     public float speed = 3f;
     private Rigidbody2D rb;
     private Animator anim;
+    private ComboAttack ca;
     public bool facingRight = true;
     
     // Jump variables
@@ -19,6 +20,7 @@ public class Controller : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        ca = GetComponent<ComboAttack>();
     }
 
     void Update()
@@ -27,7 +29,7 @@ public class Controller : MonoBehaviour
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.1f, groundLayer);
 
         // Nếu đang ko attack
-        if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Knight_attack"))
+        if (!ca.isAttacking)
         {
             // Đi ngang
             float x_direction = Input.GetAxisRaw("Horizontal"); // lấy hướng x
@@ -44,18 +46,20 @@ public class Controller : MonoBehaviour
                 rb.AddForce(new Vector2(0, jumpPower));              
             }
 
-            // Đánh
-            if (Input.GetKeyDown(KeyCode.J) && isGrounded) // nếu đang đứng trên dưới đất thì wánh dc
-            {
-                anim.SetTrigger("attack"); // chuyển sang animation wánh, chưa làm hitbox j hết nên chỉ cho đẹp thôi wwww
-            }
+            
         }
     }
 
     // quay đầu nhân vật
-    void flip()
+    private void flip()
     {
         transform.localScale = new Vector2(transform.localScale.x * (-1), transform.localScale.y);
         facingRight = !facingRight;
+    }
+
+    // check có ở dưới đất ko
+    public bool isOnGround() 
+    {
+        return isGrounded;
     }
 }
